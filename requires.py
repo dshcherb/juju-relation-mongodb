@@ -40,7 +40,8 @@ class MongoDBClient(RelationBase):
             self.set_state('{relation_name}.database.available')
             self.set_state('{relation_name}.available')
         else:
-            self.set_state('{relation_name}.removed')
+            self.remove_state('{relation_name}.database.available')
+            self.remove_state('{relation_name}.available')
 
     @hook('{requires:mongodb}-relation-{broken,departed}')
     def broken_departed(self):
@@ -48,7 +49,7 @@ class MongoDBClient(RelationBase):
 
     @hook('{requires:mongodb}-relation-broken')
     def broken(self):
-        self.set_state('{relation_name}.removed')
+        self.remove_state('{relation_name}.connected')
 
     def connection_string(self):
         """
