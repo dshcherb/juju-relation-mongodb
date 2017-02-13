@@ -28,7 +28,7 @@ class MongoDBClient(RelationBase):
 
     # These remote data fields will be automatically mapped to accessors
     # with a basic documentation string provided.
-    auto_accessors = ['hostname', 'port']
+    auto_accessors = ['hostname', 'port', 'replset']
 
     @hook('{requires:mongodb}-relation-joined')
     def joined(self):
@@ -42,6 +42,11 @@ class MongoDBClient(RelationBase):
         else:
             self.remove_state('{relation_name}.database.available')
             self.remove_state('{relation_name}.available')
+
+        if self.replset():
+            self.set_state('{relation_name}.replset.available')
+        else:
+            self.remove_state('{relation_name}.replset.available')
 
     @hook('{requires:mongodb}-relation-{broken,departed}')
     def broken_departed(self):
